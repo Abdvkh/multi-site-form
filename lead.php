@@ -17,8 +17,10 @@ if (mysqli_connect_errno()) {
 if (isset($_REQUEST['lead'])){
     // Могу реализовать валидацию на стороне сервера при необходимости, но так как срочное задание не сделал
     $name = $_REQUEST['name'] ? sanitize($_REQUEST['name']) : '';
-    $number = $_REQUEST['number'] ? sanitize($_REQUEST['number']) : '';
-    $sql = "INSERT INTO leads(name, number) VALUES ('$name', '$number')";
+    $number = $_REQUEST['phone'] ? sanitize($_REQUEST['phone']) : '';
+    $referer = $_SERVER['HTTP_REFERER'];
+
+    $sql = "INSERT INTO leads(name, number, referer) VALUES ('$name', '$number', '$referer')";
     $result = mysqli_query($connection, $sql);
 
     if ($result){
@@ -35,3 +37,15 @@ function sanitize($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
+
+$sql = "SELECT * FROM leads";
+$result = mysqli_query($connection, $sql);
+$leads = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+$msg = '';
+
+foreach ($leads as $lead){
+    $msg .= "Name: " . $lead['name'] . "Number: " . $lead['number'] . "Referer: " . $lead['referer'] . '<hr>';
+}
+
+echo $msg;
