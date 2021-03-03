@@ -28,6 +28,17 @@ if (isset($_REQUEST['lead'])){
     } else {
         $status_code = 500;
     }
+
+    $sql = "SELECT * FROM leads";
+    $result = mysqli_query($connection, $sql);
+    $leads = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $msg = '<h1>Leads</h1><hr>';
+
+    foreach ($leads as $lead){
+        $msg .= "Name: " . $lead['name'] . "Number: " . $lead['number'] . "Referer: " . $lead['referer'] . '<hr>';
+    }
+
+    echo $msg;
     http_send_status($status_code);
 }
 
@@ -37,15 +48,3 @@ function sanitize($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
-
-$sql = "SELECT * FROM leads";
-$result = mysqli_query($connection, $sql);
-$leads = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-$msg = '';
-
-foreach ($leads as $lead){
-    $msg .= "Name: " . $lead['name'] . "Number: " . $lead['number'] . "Referer: " . $lead['referer'] . '<hr>';
-}
-
-echo $msg;
